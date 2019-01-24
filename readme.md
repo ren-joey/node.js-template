@@ -1,5 +1,6 @@
 # **Node.js 建構**
-本範例採用 node.js 的 express.js 框架進行執行
+本文參考 [IT鐵人賽 - 從無到有，打造一個漂亮乾淨俐落的 RESTful API](https://ithelp.ithome.com.tw/users/20107247/ironman/1312) 系列文章
+範例採用 node.js 的 express.js 框架進行執行
 
 <h2 style="font-weight: bold;"><a>ESLint 安裝及設定</a></h2>
 
@@ -137,9 +138,231 @@ server.listen('3000', function () {
 npm run build
 ```
 
+對編譯結果進行測試
+```bash
+npm run start
+```
+
+command line 會吐出 _**index.js**_ 所寫好的內容
+
+<img src="https://ithelp.ithome.com.tw/upload/images/20171223/201072470VSg20CiK2.png"  width="500">
+
+接著可以在 [http://localhost:3000](http://localhost:3000) 看到伺服器吐出的訊息
 
 
+<img src="https://ithelp.ithome.com.tw/upload/images/20171223/201072476gCWbmOEjI.png" width="350">
+
+如果需要將 js 輸出為正式產品，可以使用壓縮指令進行打包，webpack 會將 js 程式碼全部縮減為一行
+
+```bash
+npm run build:prod
+```
+
+<h2 style="font-weight: bold;"><a>使用 nodemon 取代 node 啟動程式</a></h2>
+
+<h3 style="font-weight: bold;"><a>nodemon 功能</a></h3>
+
+* 自動重啟應用程式
+* 持續偵測你的預設程式
+* 默認支持 node＆coffeescript，但是易於運行任何可執行文件（比如python，make等）
+* 可以忽略特定文件或目錄
+* 觀察指定的目錄資料夾
+* 與服務器應用程序或一次運行公用程序和 REPLs 一起使用
+* 可在 node 中被存取使用
+* 有完整的開源碼分享在 [GitHub](https://github.com/remy/nodemon#nodemon) 上
+
+<h3 style="font-weight: bold;"><a>安裝步驟</a></h3>
+
+安裝全域套件
+```bash
+sudo npm i nodemon -g
+```
+
+安裝於專案資料夾
+```bash
+npm i -D nodemon
+```
+
+啟動專案
+```bash
+nodemon dist/index.bundle.js
+```
+
+可在 command line 看到運行結果
+
+<img src="https://ithelp.ithome.com.tw/upload/images/20171223/201072470FUlksBye3.png" width="400">
+
+<h2 style="font-weight: bold;"><a>統一 IDE 編程風格</a></h2>
+
+<h3 style="font-weight: bold;"><a>支援 editor config 的 IDE 清單</a></h3>
+
+* JetBrain’s IDEs, including PhpStorm, and
+* WebStorm
+* BBEdit
+* Atom
+* Sublime Text
+* GitHub
+* Emacs & Vim
+* Brackets
+* Coda
+* Eclipse & NetBeans
+* gEdit, jEdit, & Notepad++
+* textmate
+* Visual Studio
+* Xcode
+
+<h3 style="font-weight: bold;"><a>安裝</a></h3>
+
+建立檔案 _**.editorconfig**_ 並編輯其內容如下
+```
+# http://editorconfig.org
+root = true
+
+[*]
+indent_style = space
+indent_size = 2
+end_of_line = lf
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+# Use 4 spaces for the Python files
+[*.py]
+indent_size = 4
+max_line_length = 80
+
+# The JSON files contain newlines inconsistently
+[*.json]
+insert_final_newline = ignore
+
+# Minified JavaScript files shouldn't be changed
+[**.min.js]
+indent_style = ignore
+insert_final_newline = ignore
+
+# Makefiles always use tabs for indentation
+[Makefile]
+indent_style = tab
+
+# Batch files use tabs for indentation
+[*.bat]
+indent_style = tab
+
+[*.md]
+trim_trailing_whitespace = false
+```
+
+<h2 style="font-weight: bold;"><a>使用Express建立路由</a></h2>
+
+<h3 style="font-weight: bold;"><a>檔案結構</a></h3>
+
+依照以下結構建立檔案及資料夾
+```
+src
+┌── config
+│   ├── config.js  // joi驗證與匯出全域變數
+│   └── express.js  // express與其他middleware設定
+├── server
+│   ├── controllers  // 處理控制流程和回應
+│   ├── helper  // 處理例外Error
+│   ├── modules // 後端資料庫進行運作
+│   └── routes  // 各路徑的設定點
+│       └── index.route.js  // 主路由
+│
+└── index.js  // 程式進入點
+```
+
+編輯 /_**src**_/_**config**_/_**config.js**_ 其內容如下
+```javascript
+/* config.js */
+// require and configure dotenv, will load vars in .env in PROCESS.ENV
+require('dotenv').config();
 
 
+const config = {
+  version: '1.0.0',
+  env: 'development',
+  port: '3000'
+};
 
+export default config;
+```
 
+安裝 Express
+```bash
+yarn add express
+```
+
+安裝 dotenv
+```bash
+yarn add dotenv
+```
+
+編輯 /_**src**_/_**config**_/_**express.js**_ 內容如下
+```javascript
+/* express.js */
+import express from 'express';
+import config from './config';
+import index from '../server/routes/index.route';
+
+const app = express();
+
+/* GET home page. */
+app.get('/', (req, res) => {
+  res.send(`server started on  port http://127.0.0.1:${config.port} (${config.env})`);
+});
+
+app.use('/api', index);
+
+export default app;
+```
+
+編輯 /_**src**_/_**server**_/_**routes**_/_**index.route.js**_ 內容如下
+```javascript
+/* index.route.js */
+import express from 'express'
+import config from '../../config/config'
+
+const router = express.Router()
+
+/* GET localhost:[port]/api page. */
+router.get('/', (req, res) => {
+  res.send(`此路徑是: localhost:${config.port}/api`)
+})
+
+export default router
+```
+
+編輯 /_**src**_/_**index.js**_ 內容如下
+```javascript
+/* index.js */
+import config from './config/config';
+import app from './config/express';
+
+if (!module.parent) {
+  // listen on port config.port
+  app.listen(config.port, () => {
+    console.log(`server started on  port http://127.0.0.1:${config.port} (${config.env})`);
+  });
+}
+
+export default app;
+```
+
+使用 build 指令對專案進行打包
+```bash
+yarn build
+```
+
+使用 start 指令對 js 進行測試
+```bash
+yarn start
+```
+
+連結 [localhost:3000](localhost:3000) 測試運行結果
+
+<img src="https://ithelp.ithome.com.tw/upload/images/20171226/201072473gCJANIOhx.png" width="350">
+
+連結 [localhost:3000/api](localhost:3000/api) 測試 route 運行結果
+
+<img src="https://ithelp.ithome.com.tw/upload/images/20171226/20107247Y7gToxSS9s.png" width="350">
