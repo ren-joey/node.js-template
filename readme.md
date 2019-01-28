@@ -19,7 +19,7 @@
 * [使用 Express 建立路由](#user-content-使用-express-建立路由)
 * [新增中介 middleware](#user-content-新增中介-middleware)
 * [安裝 MySQL](#user-content-安裝-mysql)
-* [dotenv + joi 建立及設定](#user-content-dotenv-+-joi-建立及設定)
+* [dotenv + joi 建立及設定](#user-content-dotenv-joi-建立及設定)
 * [API 與資料庫連線設定](#user-content-api-與資料庫連線設定)
 
 ## **ESLint 安裝及設定**
