@@ -3,8 +3,9 @@ import mysql from 'mysql'
 
 import config from '../../config/config'
 
-const router = express.Router()
+import article from './article.route'
 
+const router = express.Router()
 
 /* GET localhost:[port]/api page. */
 router.get('/', (req, res) => {
@@ -30,5 +31,8 @@ router.get('/sqlTest', (req, res) => {
     }
   })
 })
+
+/** Article Router */
+router.use('/article', article)
 
 export default router
