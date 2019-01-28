@@ -13,6 +13,14 @@
 
 * [ESLint 安裝及設定](#ESLint-安裝及設定)
 * [使用 yarn 來管理專案](#使用-yarn-來管理專案)
+* [Webpack 安裝及設定](#Webpack-安裝及設定)
+* [使用 nodemon 取代 node 啟動程式](#使用-nodemon-取代-node-啟動程式)
+* [統一 IDE 編程風格](#統一-IDE-編程風格)
+* [使用 Express 建立路由](#使用-Express-建立路由)
+* [新增中介 middleware](#新增中介-middleware)
+* [安裝 MySQL](#安裝-MySQL)
+* [dotenv + joi 建立及設定](#dotenv-+-joi-建立及設定)
+* [API 與資料庫連線設定](#API-與資料庫連線設定)
 
 ## **ESLint 安裝及設定**
 
@@ -57,12 +65,12 @@ module.exports = {
 
 > 詳細請參考 [ESLint Configuring 文件](https://eslint.org/docs/user-guide/configuring)
 
-<h3 style="font-weight: bold;"><a>安裝 Vscode 套件</a></h3>
+### **安裝 Vscode 套件**
 
 * [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)<br>
 <img src="https://ithelp.ithome.com.tw/upload/images/20171222/20107247alrrCQuVLm.png" width="500">
 
-<h3 style="font-weight: bold;"><a>測試</a></h3>
+### **測試**
 
 隨意撰寫一個 js 檔案測試 ESLint 是否有正常運作
 
@@ -70,14 +78,14 @@ module.exports = {
 
 ## **使用 yarn 來管理專案**
 
-<h3 style="font-weight: bold;"><a>引言</a></h3>
+### **引言**
 
 由於專案建構過程中，使用 npm 安裝預設版本時，常出現版本相容性問題<br>
 如果改由 yarn 作依賴元件的版本控制將會節省許多時間 <br>
 建議接下來的版本控制取代為 yarn <br>
 當然如果你對 npm 的版本控制寥落指掌也可以忽略這個方案 <br>
 
-<h3 style="font-weight: bold;"><a>安裝</a></h3>
+### **安裝**
 
 ```bash
 sudo npm i -g yarn
@@ -85,7 +93,7 @@ sudo npm i -g yarn
 
 終端機接下來會詢問您電腦的密碼，直接輸入後點 enter 即可
 
-<h2 style="font-weight: bold;"><a>Webpack 安裝及設定</a></h2>
+## **Webpack 安裝及設定**
 
 使用 npm 安裝 webpack 及 babel
 ```bash
@@ -123,7 +131,7 @@ module.exports = {
 }
 ```
 
-<h3 style="font-weight: bold;"><a>建立 npm 指令</a></h3>
+### **建立 npm 指令**
 
 將新的 npm 指令動作新增到 _**package.json**_ 中的 "script" 項目，內容如下
 ```json
@@ -134,7 +142,7 @@ module.exports = {
 }
 ```
 
-<h3 style="font-weight: bold;"><a>測試</a></h3>
+### **測試**
 
 建立 _**index.js**_ 檔案進行測試，內容入下
 ```javascript
@@ -193,9 +201,9 @@ command line 會吐出 _**index.js**_ 所寫好的內容
 yarn build:prod
 ```
 
-<h2 style="font-weight: bold;"><a>使用 nodemon 取代 node 啟動程式</a></h2>
+## **使用 nodemon 取代 node 啟動程式**
 
-<h3 style="font-weight: bold;"><a>nodemon 功能</a></h3>
+### **nodemon 功能**
 
 * 自動重啟應用程式
 * 持續偵測你的預設程式
@@ -206,7 +214,7 @@ yarn build:prod
 * 可在 node 中被存取使用
 * 有完整的開源碼分享在 [GitHub](https://github.com/remy/nodemon#nodemon) 上
 
-<h3 style="font-weight: bold;"><a>安裝步驟</a></h3>
+### **安裝步驟**
 
 安裝全域套件
 ```bash
@@ -227,9 +235,9 @@ nodemon dist/index.bundle.js
 
 <img src="https://ithelp.ithome.com.tw/upload/images/20171223/201072470FUlksBye3.png" width="400">
 
-<h2 style="font-weight: bold;"><a>統一 IDE 編程風格</a></h2>
+## **統一 IDE 編程風格**
 
-<h3 style="font-weight: bold;"><a>支援 editor config 的 IDE 清單</a></h3>
+### **支援 editor config 的 IDE 清單**
 
 * JetBrain’s IDEs, including PhpStorm, and
 * WebStorm
@@ -246,7 +254,7 @@ nodemon dist/index.bundle.js
 * Visual Studio
 * Xcode
 
-<h3 style="font-weight: bold;"><a>安裝</a></h3>
+### **安裝**
 
 建立檔案 _**.editorconfig**_ 並編輯其內容如下
 ```
@@ -290,9 +298,9 @@ trim_trailing_whitespace = false
 如此一來，只需要加入一個設定檔即可在團隊中統一編程風格
 
 
-<h2 style="font-weight: bold;"><a>使用 Express 建立路由</a></h2>
+## **使用 Express 建立路由**
 
-<h3 style="font-weight: bold;"><a>檔案結構</a></h3>
+### **檔案結構**
 
 安裝 Express
 ```bash
@@ -405,13 +413,13 @@ yarn start
 
 <img src="https://ithelp.ithome.com.tw/upload/images/20171226/20107247Y7gToxSS9s.png" width="350">
 
-<h2 style="font-weight: bold;"><a>新增中介 middleware</a></h2>
+## **新增中介 middleware**
 
-<h3 style="font-weight: bold;"><a>簡介</a></h3>
+### **簡介**
 
 node.js 伺服器收到請求後，在進入 route 轉發之前會先經過一個中繼站進行請求分析，依據計算的結果發送對應的頁面給使用者
 
-<h3 style="font-weight: bold;"><a>安裝解析器 body-parser</a></h3>
+### **安裝解析器 body-parser**
 
 body-parser 是一個 HTTP 請求解析的中介軟體，使用這個插件可以解析 JSON、Raw、text、XML、URL-encoded 格式的請求，你可以在 Postman 上看到這些格式，假設今天 POST 東西到 body 時，後端必須要靠 body-parser 來解析資料
 
@@ -429,7 +437,7 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 ```
 
-<h3 style="font-weight: bold;"><a>安裝跨來源資源共享 cors</a></h3>
+### **安裝跨來源資源共享 cors**
 
 跨來源資源共享（Cross-Origin Resource Sharing (CORS)）是一種使用額外 HTTP 標頭來讓目前瀏覽網站的 user agent 能獲得訪問不同來源（網域）伺服器特定資源之權限的機制。當 user agent 請求一個不是目前文件來源——來自於不同網域（domain）、通訊協定（protocol）或通訊埠（port）的資源時，會建立一個跨來源 HTTP 請求（cross-origin HTTP request）。
 
@@ -461,7 +469,7 @@ app.get('/', (req, res) => {
 });
 ```
 
-<h3 style="font-weight: bold;"><a>新增連線存取紀錄 morgan</a></h3>
+### **新增連線存取紀錄 morgan**
 
 mogran 是一個 HTTP request logger 也就是在你存取某個 API 路徑時你的終端機就會顯示存取結果像是 200、404 的狀態碼，有助於開發階段的除錯。
 
@@ -487,11 +495,11 @@ yarn start
 
 <img src="https://ithelp.ithome.com.tw/upload/images/20171227/20107247I8lSVMJtgY.png" width="550">
 
-<h2 style="font-weight: bold;"><a>安裝 MySQL</a></h2>
+## **安裝 MySQL**
 
 > 本段文章節錄自 [https://ithelp.ithome.com.tw/articles/10194455](https://ithelp.ithome.com.tw/articles/10194455)
 
-<h3 style="font-weight: bold;"><a>資料庫系統</a></h3>
+### **資料庫系統**
 
 資料庫系統是由資料庫和資料庫管理系統所組成的，資料庫的定義就是一個儲存資料的電子文件檔案櫃並有長存資料之稱，數據類型分為關聯性資料庫(SQL)以及非關聯性資料庫(MySQL)。
 
@@ -538,13 +546,13 @@ yarn start
 
 > 詳細介紹可參考 [快速認識4類主流 NoSQL 資料庫](https://www.ithome.com.tw/news/92507)
 
-<h3 style="font-weight: bold;"><a>安裝 MySQL</a></h3>
+### **安裝**
 
 點選 [Download MySQL Community Serve](https://dev.mysql.com/downloads/mysql/) 至 MySQL 官網下載最新的穩定版本
 
 <img src="https://i.imgur.com/TOP0S0L.png">
 
-<h3 style="font-weight: bold;"><a>安裝 GUI</a></h3>
+### **安裝 GUI**
 
 如果您對傳統介面 [phpMyAdmin](https://www.phpmyadmin.net/) 的操作很熟悉，可以略過此步驟<br>
 本範例將採用 [Sequel Pro](http://www.sequelpro.com/)
@@ -559,9 +567,9 @@ yarn start
 5. 建立新的資料表 User 及相關欄位如下圖所示<br>
   <img src="https://ithelp.ithome.com.tw/upload/images/20171231/20107247kMvMhTFmN6.png">
 
-<h2 style="font-weight: bold;"><a>dotenv + joi 建立及設定</a></h2>
+## **dotenv + joi 建立及設定**
 
-<h3 style="font-weight: bold;"><a>設定 dotenv</a></h3>
+### **設定 dotenv**
 
 建立 _**.example.env**_ 檔
 ```text
@@ -576,7 +584,7 @@ VERSION=1.0.0
 cp .example.env .env
 ```
 
-<h3 style="font-weight: bold;"><a>安裝及設定 joi</a></h3>
+### **安裝及設定 joi**
 
 joi是一個請求驗證機制，依照設定好的 schema 規範限制傳入的資料格式，如果傳入的資料錯誤就會立刻被檢測出來
 
@@ -627,6 +635,6 @@ yarn build
 yarn start
 ```
 
-<h2 style="font-weight: bold;"><a>API 與資料庫連線設定</a></h2>
+## **API 與資料庫連線設定**
 
-<h3 style="font-weight: bold;"><a>設定 dotenv</a></h3>
+### **設定 dotenv**
