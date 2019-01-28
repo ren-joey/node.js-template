@@ -9,7 +9,12 @@
 * 對 npm 指令有基本認知
 * 對網頁前後端的交互運作機制有基本認知
 
-<h2 style="font-weight: bold;"><a>ESLint 安裝及設定</a></h2>
+# 目錄
+
+* [ESLint 安裝及設定](#eslint-install-and-config)
+* [使用 yarn 來管理專案](#use-yarn-manage-project)
+
+## [ESLint 安裝及設定](#eslint-install-and-config)
 
 初始化 npm 專案
 ```bash
@@ -63,7 +68,7 @@ module.exports = {
 
 <img src="https://ithelp.ithome.com.tw/upload/images/20171222/20107247ODuObnUceE.png" width="500">
 
-<h2 style="font-weight: bold;"><a>使用 yarn 來管理專案</a></h2>
+## [使用 yarn 來管理專案](#use-yarn-manage-project)
 
 <h3 style="font-weight: bold;"><a>引言</a></h3>
 
