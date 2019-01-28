@@ -11,10 +11,10 @@
 
 # 目錄
 
-* [ESLint 安裝及設定](#eslint-install-and-config)
-* [使用 yarn 來管理專案](#use-yarn-manage-project)
+* [ESLint 安裝及設定](#ESLint-安裝及設定)
+* [使用 yarn 來管理專案](#使用-yarn-來管理專案)
 
-## [ESLint 安裝及設定](#eslint-install-and-config)
+## **ESLint 安裝及設定**
 
 初始化 npm 專案
 ```bash
@@ -68,7 +68,7 @@ module.exports = {
 
 <img src="https://ithelp.ithome.com.tw/upload/images/20171222/20107247ODuObnUceE.png" width="500">
 
-## [使用 yarn 來管理專案](#use-yarn-manage-project)
+## **使用 yarn 來管理專案**
 
 <h3 style="font-weight: bold;"><a>引言</a></h3>
 
