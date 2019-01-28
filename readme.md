@@ -753,7 +753,7 @@ yarn start
 
 ## **【實作】Article文章 (GET與POST)**
 
-> 本章節參考 [IT鐵人賽 - [Day-24](實作)Article文章(GET與POST)](https://ithelp.ithome.com.tw/articles/10195687)
+> 本章節參考 [IT鐵人賽 - \[Day-24\](實作)Article文章(GET與POST)](https://ithelp.ithome.com.tw/articles/10195687)
 
 ### **設定路由**
 
