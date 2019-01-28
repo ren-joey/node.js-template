@@ -1,8 +1,8 @@
-# **Node.js 建構範例**
+# **Node.js API 建構範例**
 本文參考 [IT鐵人賽 - 從無到有，打造一個漂亮乾淨俐落的 RESTful API](https://ithelp.ithome.com.tw/users/20107247/ironman/1312) 系列文章
 範例採用 node.js 的 express.js 框架執行
 
-本範例主要展示 node.js 伺服器架構 / 撰寫流程，以 npm 指令及 js 程式碼為主軸<br/>
+本範例主要展示 node.js 伺服器架構 / 撰寫流程，以 npm 指令及 js 程式碼為主軸<br>
 因此 **開始本範例前需具備下列 IT 知識** :
 * 基本的前端鐵三角撰寫經驗，包含html, css, js
 * 對 CommonJS ( module programming ) 有基本的認知
@@ -46,15 +46,15 @@ module.exports = {
   }
 }
 ```
-.eslintrc<br/>
-.eslintrc.*<br/>
+.eslintrc<br>
+.eslintrc.*<br>
 以上都是 ESLint 所允許的設定檔格式，但由於需要在程式碼中進行註解，故使用 js 副檔名
 
 > 詳細請參考 [ESLint Configuring 文件](https://eslint.org/docs/user-guide/configuring)
 
 <h3 style="font-weight: bold;"><a>安裝 Vscode 套件</a></h3>
 
-* [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)<br/>
+* [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)<br>
 <img src="https://ithelp.ithome.com.tw/upload/images/20171222/20107247alrrCQuVLm.png" width="500">
 
 <h3 style="font-weight: bold;"><a>測試</a></h3>
@@ -67,10 +67,10 @@ module.exports = {
 
 <h3 style="font-weight: bold;"><a>引言</a></h3>
 
-由於專案建構過程中，使用 npm 安裝預設版本時，常出現版本相容性問題<br/>
-如果改由 yarn 作依賴元件的版本控制將會節省許多時間 <br/>
-建議接下來的版本控制取代為 yarn <br/>
-當然如果你對 npm 的版本控制寥落指掌也可以忽略這個方案 <br/>
+由於專案建構過程中，使用 npm 安裝預設版本時，常出現版本相容性問題<br>
+如果改由 yarn 作依賴元件的版本控制將會節省許多時間 <br>
+建議接下來的版本控制取代為 yarn <br>
+當然如果你對 npm 的版本控制寥落指掌也可以忽略這個方案 <br>
 
 <h3 style="font-weight: bold;"><a>安裝</a></h3>
 
@@ -157,7 +157,7 @@ yarn build
 
 <img src="https://i.imgur.com/Xg1mjib.png" width="500">
 
-原因是 babel-core 核心元件跟套件 babel-loader 的 npm 預設版本不合<br/>
+原因是 babel-core 核心元件跟套件 babel-loader 的 npm 預設版本不合<br>
 只要將 babel-loader 降低版本即可
 
 ```bash
@@ -281,7 +281,7 @@ indent_style = tab
 [*.md]
 trim_trailing_whitespace = false
 ```
-完成後 IDE 會自動抓取設定值中的風格設定，並忽略 IDE 的原始設定值<br/>
+完成後 IDE 會自動抓取設定值中的風格設定，並忽略 IDE 的原始設定值<br>
 如此一來，只需要加入一個設定檔即可在團隊中統一編程風格
 
 
@@ -490,7 +490,7 @@ yarn start
 
 資料庫系統是由資料庫和資料庫管理系統所組成的，資料庫的定義就是一個儲存資料的電子文件檔案櫃並有長存資料之稱，數據類型分為關聯性資料庫(SQL)以及非關聯性資料庫(MySQL)。
 
-1. 關聯性資料庫(SQL) <br/>
+1. 關聯性資料庫(SQL) <br>
 所謂關聯(Relationship)是指藉由表格(table)之間的關聯性的形式找出資料的方法，常見的類型有以下幾種。
    * MySQL
    * PostgreSQL
@@ -505,7 +505,7 @@ yarn start
    * FoxPro
    * foshub
 
-1. 非關聯性資料庫(NoSQL) <br/>
+1. 非關聯性資料庫(NoSQL) <br>
 非關聯性資料庫故名意思就是沒有關聯性的他所存在的資料，有分為四大類 Key-Value資料庫、記憶體資料庫、文件資料庫、圖學資料庫，其中最常見的就是一個鍵(key)搭配一個值(value)，Google 的 Firebase Database 就是儲存非關聯性的資料，下面來為各位做整理。
 
    * Key-Value資料庫
@@ -538,3 +538,90 @@ yarn start
 點選 [Download MySQL Community Serve](https://dev.mysql.com/downloads/mysql/) 至 MySQL 官網下載最新的穩定版本
 
 <img src="https://i.imgur.com/TOP0S0L.png">
+
+<h3 style="font-weight: bold;"><a>安裝 GUI</a></h3>
+
+如果您對傳統介面 [phpMyAdmin](https://www.phpmyadmin.net/) 的操作很熟悉，可以略過此步驟<br>
+本範例將採用 [Sequel Pro](http://www.sequelpro.com/)
+
+1. 點選 [Sequel Pro 下載安裝](http://www.sequelpro.com/)，安裝過程選擇 Use Legacy Password Encryption，並輸入您的密碼
+2. 打開 Sequel Pro 新增連線，帳號通常預設是 root，密碼為當初安裝所設定的密碼，主機位置就是自己本機 localhost 也就是 127.0.0.1<br>
+  <img src="https://ithelp.ithome.com.tw/upload/images/20171229/20107247JzTSXiFjZn.png" width="500">
+3. 連線成功後即可看到操作介面<br>
+  <img src="https://i.imgur.com/SbUAFVE.png">
+4. 建立新的資料表 Article 及相關欄位如下圖所示<br>
+  <img src="https://ithelp.ithome.com.tw/upload/images/20171231/20107247QDSzrMTG04.png">
+5. 建立新的資料表 User 及相關欄位如下圖所示<br>
+  <img src="https://ithelp.ithome.com.tw/upload/images/20171231/20107247kMvMhTFmN6.png">
+
+<h2 style="font-weight: bold;"><a>dotenv + joi 建立及設定</a></h2>
+
+<h3 style="font-weight: bold;"><a>設定 dotenv</a></h3>
+
+建立 _**.example.env**_ 檔
+```text
+/* .example.env 全域變數的設定檔範本 */
+PORT=3000
+NODE_ENV=development
+VERSION=1.0.0
+```
+
+複製該檔案為 _**.env**_
+```bash
+cp .example.env .env
+```
+
+<h3 style="font-weight: bold;"><a>安裝及設定 joi</a></h3>
+
+joi是一個請求驗證機制，依照設定好的 schema 規範限制傳入的資料格式，如果傳入的資料錯誤就會立刻被檢測出來
+
+安裝 joi
+```bash
+yarn add joi
+```
+
+編輯 _src/config/**config.js**_，將原本寫死的 config 設定值直接覆蓋掉
+```javascript
+/* config.js */
+import Joi from 'joi';
+
+// require and configure dotenv, will load vars in .env in PROCESS.ENV
+require('dotenv').config();
+
+// 建立每個變數 joi 驗證規則
+const envVarSchema = Joi.object().keys({
+  NODE_ENV: Joi.string().default('development').allow(['development', 'production']), // 字串且預設值為development 並只允許兩種參數
+  PORT: Joi.number().default(8080), // 數字且預設值為 8080
+  VERSION: Joi.string() // 字串
+}).unknown().required();
+
+// process.env 撈取 .env 內的變數做 joi 驗證
+const {
+  error,
+  value: envVars
+} = Joi.validate(process.env, envVarSchema);
+
+if (error) {
+  throw new Error(`Config validation error: ${error.message}`);
+}
+
+const config = {
+  version: envVars.VERSION, // 版本
+  env: envVars.NODE_ENV, // 開發模式
+  port: envVars.PORT // 阜號
+};
+
+export default config; // 匯出共用
+```
+
+> 更多 joi 變數規範請參考 [joi GitHub](https://github.com/hapijs/joi/blob/v13.0.2/API.md)
+
+測試
+```bash
+yarn build
+yarn start
+```
+
+<h2 style="font-weight: bold;"><a>API 與資料庫連線設定</a></h2>
+
+<h3 style="font-weight: bold;"><a>設定 dotenv</a></h3>
