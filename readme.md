@@ -21,7 +21,7 @@
 * [安裝 MySQL](#user-content-安裝-mysql)
 * [dotenv + joi 建立及設定](#user-content-dotenv-joi-建立及設定)
 * [API 與資料庫連線設定](#user-content-api-與資料庫連線設定)
-* [【實作】Article文章(GET與POST)](#user-content-api-實作Article文章GET與POST)
+* [【實作】Article文章(GET與POST)](#user-content-實作article文章-get與post)
 
 ## **ESLint 安裝及設定**
 
@@ -751,4 +751,4 @@ yarn start
 
 <img src="https://ithelp.ithome.com.tw/upload/images/20180102/20107247KVprssgF1X.png" width="350">
 
-## **【實作】Article文章(GET與POST)**
+## **【實作】Article文章 (GET與POST)**
