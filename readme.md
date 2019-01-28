@@ -11,16 +11,16 @@
 
 # 目錄
 
-* [ESLint 安裝及設定](#user-content-ESLint-安裝及設定)
+* [ESLint 安裝及設定](#user-content-eslint-安裝及設定)
 * [使用 yarn 來管理專案](#user-content-使用-yarn-來管理專案)
-* [Webpack 安裝及設定](#user-content-Webpack-安裝及設定)
+* [Webpack 安裝及設定](#user-content-webpack-安裝及設定)
 * [使用 nodemon 取代 node 啟動程式](#user-content-使用-nodemon-取代-node-啟動程式)
-* [統一 IDE 編程風格](#user-content-統一-IDE-編程風格)
-* [使用 Express 建立路由](#user-content-使用-Express-建立路由)
+* [統一 IDE 編程風格](#user-content-統一-ide-編程風格)
+* [使用 Express 建立路由](#user-content-使用-express-建立路由)
 * [新增中介 middleware](#user-content-新增中介-middleware)
-* [安裝 MySQL](#user-content-安裝-MySQL)
+* [安裝 MySQL](#user-content-安裝-mysql)
 * [dotenv + joi 建立及設定](#user-content-dotenv-+-joi-建立及設定)
-* [API 與資料庫連線設定](#user-content-API-與資料庫連線設定)
+* [API 與資料庫連線設定](#user-content-api-與資料庫連線設定)
 
 ## **ESLint 安裝及設定**
 
