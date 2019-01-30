@@ -1655,7 +1655,7 @@ yarn start
 }
 ```
 
-<img src="https://ithelp.ithome.com.tw/upload/images/20180109/20107247VxVLfySoBO.png" width="400">
+<img src="https://ithelp.ithome.com.tw/upload/images/20180109/20107247VxVLfySoBO.png" width="500">
 
 測試資料 (錯誤信箱)
 ```json
@@ -1665,7 +1665,7 @@ yarn start
 }
 ```
 
-<img src="https://ithelp.ithome.com.tw/upload/images/20180109/20107247VYDO2NiQzX.png" width="400">
+<img src="https://ithelp.ithome.com.tw/upload/images/20180109/20107247VYDO2NiQzX.png" width="500">
 
 測試資料 (錯誤密碼)
 ```json
@@ -1675,4 +1675,4 @@ yarn start
 }
 ```
 
-<img src="https://ithelp.ithome.com.tw/upload/images/20180109/20107247GRxIUDrFHA.png" width="400">
+<img src="https://ithelp.ithome.com.tw/upload/images/20180109/20107247GRxIUDrFHA.png" width="500">
