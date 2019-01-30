@@ -1107,8 +1107,6 @@ router.use('/user', user);
 
 新增並編輯 _src/server/modules/**user.module.js**_
 ```javascript
-傳過來的。
-
 // user.module.js
 import mysql from 'mysql';
 import config from '../../config/config';
