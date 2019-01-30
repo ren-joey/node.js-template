@@ -1,5 +1,6 @@
 // user.module.js
 import mysql from 'mysql'
+import bcrypt from 'bcrypt'
 import config from '../../config/config'
 
 const connectionPool = mysql.createPool({
@@ -99,9 +100,42 @@ const deleteUser = (userId) => {
   })
 }
 
+/*  User GET (Login)登入取得資訊  */
+const selectUserLogin = (insertValues) => {
+  return new Promise((resolve, reject) => {
+    connectionPool.getConnection((connectionError, connection) => {
+      if (connectionError) {
+        reject(connectionError)
+      } else {
+        connection.query('SELECT * FROM User WHERE user_mail = ?', insertValues.user_mail, (error, result) => {
+          if (error) {
+            console.error(error)
+            reject(error)
+          } else if (Object.keys(result).length === 0) {
+            resolve(`${insertValues.user_mail} 該信箱尚未註冊`)
+          } else {
+            const dbHashPassword = result[0].user_password
+            const requestPassword = insertValues.user_password
+
+            bcrypt.compare(requestPassword, dbHashPassword).then((res) => {
+              if (res) {
+                resolve('登入成功')
+              } else {
+                resolve('您輸入的密碼有誤')
+              }
+            })
+          }
+          connection.release()
+        })
+      }
+    })
+  })
+}
+
 export default {
   createUser,
   selectUser,
   modifyUser,
-  deleteUser
+  deleteUser,
+  selectUserLogin
 }

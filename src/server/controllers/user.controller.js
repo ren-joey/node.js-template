@@ -1,10 +1,16 @@
 // user.controller.js
+import bcrypt from 'bcrypt'
 import userModule from '../modules/user.module'
 
 /* User POST 新增 */
 const userPost = (req, res) => {
   // 取得新增參數
-  const insertValues = req.body
+  const insertValues = {
+    user_name: req.body.user_name,
+    user_mail: req.body.user_mail,
+    user_password: bcrypt.hashSync(req.body.user_password, 10)
+  }
+
   userModule.createUser(insertValues).then((result) => {
     res.send(result) // 成功回傳result結果
   }).catch((err) => {
@@ -44,9 +50,21 @@ const userDelete = (req, res) => {
   })
 }
 
+/* User  POST 登入(Login) */
+const userLogin = (req, res) => {
+  const insertValues = req.body
+
+  userModule.selectUserLogin(insertValues).then((result) => {
+    res.send(result)
+  }).catch((err) => {
+    return res.send(err)
+  })
+}
+
 export default {
   userPost,
   userGet,
   userPut,
-  userDelete
+  userDelete,
+  userLogin
 }

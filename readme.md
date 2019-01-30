@@ -26,6 +26,8 @@
 * [【實作】User用戶 (GET與POST)](#user-content-實作user用戶-get與post)
 * [【實作】User用戶 (PUT與DELETE)](#user-content-實作user用戶-put與delete)
 * [使用 joi 來驗證 POST 資料](#user-content-使用-joi-來驗證-post-資料)
+* [bcrypt 鹽值加密](#user-content-bcrypt-鹽值加密)
+* [使用者登入及密碼驗證](#user-content-使用者登入及密碼驗證)
 
 ## **ESLint 安裝及設定**
 
@@ -1175,6 +1177,7 @@ export default router;
 ```
 
 ## **測試**
+
 ```bash
 yarn build
 yarn start
@@ -1260,6 +1263,7 @@ export default router;
 ```
 
 ## **測試**
+
 ```bash
 yarn build
 yarn start
@@ -1336,6 +1340,7 @@ router.route('/:user_id').put(userCtrl.userPut);
 ```
 
 ## **測試**
+
 ```bash
 yarn build
 yarn start
@@ -1415,6 +1420,7 @@ router.route('/:user_id')
 ```
 
 ## **測試**
+
 ```bash
 yarn build
 yarn start
@@ -1423,3 +1429,250 @@ yarn start
 <img src="https://ithelp.ithome.com.tw/upload/images/20180106/20107247vzX272W3BG.png">
 
 ## **使用 joi 來驗證 POST 資料**
+
+安裝 express-validation
+```bash
+yarn add express-validation
+```
+
+新增並編輯 _src/config/**param-validation.js**_
+```javascript
+import Joi from 'joi'
+
+export default {
+  // POST /api/article
+  createArticle: {
+    body: {
+      user_id: Joi.number().required(), // 數字 + 必填
+      article_title: Joi.string().required(), // 字串 + 必填
+      article_tag: Joi.string(), // 字串
+      article_content: Joi.string().min(20).required() // 文章長度至少 20 個字
+    }
+  },
+  modifyArticle: {
+    params: {
+      article_id: Joi.number().required()
+    },
+    body: {
+      user_id: Joi.number(), // 數字
+      article_title: Joi.string(), // 字串
+      article_tag: Joi.string(), // 字串
+      article_content: Joi.string().min(20) // 文章長度至少 20 個字
+    }
+  },
+  // POST /api/user
+  createUser: {
+    body: {
+      user_name: Joi.string().required(), // 限定 email 格式並移除空白
+      user_mail: Joi.string().email().trim().required(), // 最小長度6最大30，只允許英文大小寫和數字
+      user_password: Joi.string().regex(/[a-zA-Z0-9]{6,30}$/).required()
+    }
+  }
+}
+```
+
+編輯 _src/server/routes/**article.route.js**_
+```javascript
+// article.route.js
+import validation from 'express-validation'
+import paramValidation from '../../config/param-validation'
+
+router.route('/')
+  .get(articleCtrl.articleGet) /** 取得 Article 所有值組 */
+  .post(validation(paramValidation.createArticle), articleCtrl.articlePost) /** 新增 Article 值組 */
+
+router.route('/:article_id')
+  .put(validation(paramValidation.modifyArticle), articleCtrl.articlePut) /** 修改 Article 值組 */
+  .delete(articleCtrl.articleDelete)
+```
+
+編輯 _src/server/routes/**user.route.js**_
+```javascript
+// user.route.js
+import validation from 'express-validation'
+import paramValidation from '../../config/param-validation'
+
+router.route('/')
+  .post(validation(paramValidation.createUser), userCtrl.userPost) /** 取得 User 所有值組 */
+  .get(userCtrl.userGet)
+
+router.route('/:user_id')
+  .put(userCtrl.userPut)
+  .delete(userCtrl.userDelete)
+```
+
+### **驗證測試**
+
+```bash
+yarn build
+yarn start
+```
+
+測試資料
+```json
+{
+    "user_id": 1,
+    "article_title": "Node.js教學",
+    "article_tag": "後端",
+    "article_content": "歡迎來到此篇教學。"
+}
+```
+
+可以發現圖中紅色圈起處拋出一個 joi 的錯誤裡面寫到，article_content 至少要20個字元
+
+<img src="https://ithelp.ithome.com.tw/upload/images/20180107/20107247aBXbZrcGB0.png">
+
+## **bcrypt 鹽值加密**
+
+> 節錄自 [IT 鐵人賽 - [Day-29] (實作)bcrypt將使用者密碼加密](https://ithelp.ithome.com.tw/articles/10196477)
+
+安裝
+```bash
+yarn add bcrypt
+```
+
+編輯 _src/server/controllers/**user.controller.js**_
+```javascript
+// user.controller.js
+import bcrypt from 'bcrypt';
+
+/* User  POST 新增 */
+const userPost = (req, res) => {
+  // 取得新增參數
+  const insertValues = {
+    user_name: req.body.user_name,
+    user_mail: req.body.user_mail,
+    user_password: bcrypt.hashSync(req.body.user_password, 10) // 密碼加密
+  };
+
+  userModule.createUser(insertValues).then((result) => {
+    res.send(result); // 成功回傳result結果
+  }).catch((err) => { return res.send(err); }); // 失敗回傳錯誤訊息
+};
+```
+
+### **測試**
+
+測試前先將資料庫中的 User 資料表清空
+```sql
+TRUNCATE TABLE User
+```
+
+<img src="https://ithelp.ithome.com.tw/upload/images/20180108/20107247SljOfto2AS.png" width="400">
+
+測試資料
+```json
+{
+	"user_name":"Andy10",
+	"user_mail":"andy@gmail.com",
+	"user_password":"password10"
+}
+```
+
+<img src="https://ithelp.ithome.com.tw/upload/images/20180108/20107247DzBkEVfBQu.png" width="400">
+
+使用 GET 查看加密結果
+
+<img src="https://ithelp.ithome.com.tw/upload/images/20180108/20107247UZQvxngYDk.png" width="400">
+
+## **使用者登入及密碼驗證**
+
+編輯 _src/server/modules/**user.module.js**_
+```javascript
+// user.module.js
+import bcrypt from 'bcrypt';
+
+/*  User GET (Login)登入取得資訊  */
+const selectUserLogin = (insertValues) => {
+  return new Promise((resolve, reject) => {
+    connectionPool.getConnection((connectionError, connection) => { // 資料庫連線
+      if (connectionError) {
+        reject(connectionError); // 若連線有問題回傳錯誤
+      } else {
+        connection.query( // User撈取所有欄位的值組
+          'SELECT * FROM User WHERE user_mail = ?',
+          insertValues.user_mail, (error, result) => {
+            if (error) {
+              console.error('SQL error: ', error);
+              reject(error); // 寫入資料庫有問題時回傳錯誤
+            } else if (Object.keys(result).length === 0) {
+              resolve('信箱尚未註冊！');
+            } else {
+              const dbHashPassword = result[0].user_password; // 資料庫加密後的密碼
+              const userPassword = insertValues.user_password; // 使用者登入輸入的密碼
+              bcrypt.compare(userPassword, dbHashPassword).then((res) => { // 使用bcrypt做解密驗證
+                if (res) {
+                  resolve('登入成功'); // 登入成功
+                } else {
+                  resolve('您輸入的密碼有誤！'); // 登入失敗
+                }
+              });
+            }
+            connection.release();
+          }
+        );
+      }
+    });
+  });
+};
+```
+
+編輯 _src/server/controllers/**user.controller.js**_
+```javascript
+// user.controller.js
+import userModule from '../modules/user.module';
+
+/* User  POST 登入(Login) */
+const userLogin = (req, res) => {
+  // 取得帳密
+  const insertValues = req.body;
+  userModule.selectUserLogin(insertValues).then((result) => {
+    res.send(result); // 成功回傳result結果
+  }).catch((err) => { return res.send(err); }); // 失敗回傳錯誤訊息
+};
+```
+
+編輯 _src/server/routes/**user.route.js**_
+```javascript
+// user.route.js
+import userCtrl from '../controllers/user.controller';
+
+router.route('/login').post(userCtrl.userLogin); /** User 登入 */
+```
+
+### **測試**
+
+```bash
+yarn build
+yarn start
+```
+
+測試資料
+```json
+{
+	"user_mail":"andy@gmail.com",
+	"user_password":"password10"
+}
+```
+
+<img src="https://ithelp.ithome.com.tw/upload/images/20180109/20107247VxVLfySoBO.png" width="400">
+
+測試資料 (錯誤信箱)
+```json
+{
+	"user_mail":"abcd@gmail.com",
+	"user_password":"password10"
+}
+```
+
+<img src="https://ithelp.ithome.com.tw/upload/images/20180109/20107247VYDO2NiQzX.png" width="400">
+
+測試資料 (錯誤密碼)
+```json
+{
+	"user_mail":"andy@gmail.com",
+	"user_password":"abcde"
+}
+```
+
+<img src="https://ithelp.ithome.com.tw/upload/images/20180109/20107247GRxIUDrFHA.png" width="400">

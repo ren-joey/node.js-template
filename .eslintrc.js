@@ -3,7 +3,8 @@ module.exports = {
   //parser: 指的是剖析器，如果你有用babel編譯器，就是設定"babel-eslint"
   "env": {
     "browser": true,
-    "node": true
+    "node": true,
+    "jest": true
   },
   "extends": "airbnb-base",
   "rules": {

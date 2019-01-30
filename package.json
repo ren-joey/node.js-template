@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack -w",
     "build:prod": "webpack -p",
-    "start": "nodemon dist/index.bundle.js"
+    "start": "nodemon dist/index.bundle.js",
+    "test:unit": "jest"
   },
   "keywords": [],
   "author": "",
@@ -26,10 +27,13 @@
     "webpack-node-externals": "^1.7.2"
   },
   "dependencies": {
+    "bcrypt": "^3.0.3",
     "body-parser": "^1.18.3",
     "cors": "^2.8.5",
     "dotenv": "^6.2.0",
     "express": "^4.16.4",
+    "express-validation": "^1.0.2",
+    "jest": "^24.0.0",
     "joi": "^14.3.1",
     "morgan": "^1.9.1",
     "mysql": "^2.16.0"
