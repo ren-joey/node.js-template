@@ -4,6 +4,7 @@ import mysql from 'mysql'
 import config from '../../config/config'
 
 import article from './article.route'
+import user from './user.route'
 
 const router = express.Router()
 
@@ -34,5 +35,8 @@ router.get('/sqlTest', (req, res) => {
 
 /** Article Router */
 router.use('/article', article)
+
+/** User Router */
+router.use('/user', user)
 
 export default router

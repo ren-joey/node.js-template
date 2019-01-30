@@ -22,6 +22,10 @@
 * [dotenv + joi 建立及設定](#user-content-dotenv-joi-建立及設定)
 * [API 與資料庫連線設定](#user-content-api-與資料庫連線設定)
 * [【實作】Article文章(GET與POST)](#user-content-實作article文章-get與post)
+* [【實作】Article文章(PUT與DELETE)](#user-content-實作article文章-put與delete)
+* [【實作】User用戶 (GET與POST)](#user-content-實作user用戶-get與post)
+* [【實作】User用戶 (PUT與DELETE)](#user-content-實作user用戶-put與delete)
+* [使用 joi 來驗證 POST 資料](#user-content-使用-joi-來驗證-post-資料)
 
 ## **ESLint 安裝及設定**
 
@@ -864,3 +868,560 @@ yarn start
 ```
 
 <img src="https://ithelp.ithome.com.tw/upload/images/20180103/20107247x35NaYFdIW.png">
+
+### **取得 Article**
+
+編輯 _src/server/modules/**article.module.js**_
+```javascript
+// article.module.js
+
+/*  Article GET 取得  */
+const selectArticle = () => {
+  return new Promise((resolve, reject) => {
+    connectionPool.getConnection((connectionError, connection) => { // 資料庫連線
+      if (connectionError) {
+        reject(connectionError); // 若連線有問題回傳錯誤
+      } else {
+        connection.query( // Article撈取所有欄位的值組
+          'SELECT * FROM Article', (error, result) => {
+            if (error) {
+              console.error('SQL error: ', error);
+              reject(error); // 寫入資料庫有問題時回傳錯誤
+            } else {
+              resolve(result); // 撈取成功回傳 JSON 資料
+            }
+            connection.release();
+          }
+        );
+      }
+    });
+  });
+};
+
+export default {
+  selectArticle
+}
+```
+
+編輯 _src/server/controllers/**article.controller.js**_
+```javascript
+// article.controller.js
+
+/*  Article GET 取得  */
+const articleGet = (req, res) => {
+  articleModule.selectArticle().then((result) => {
+    res.send(result); // 成功回傳result結果
+  }).catch((err) => { return res.send(err); }); // 失敗回傳錯誤訊息
+};
+
+export default {
+  articleGet
+}
+```
+
+編輯 _src/server/routes/**article.route.js**_
+```javascript
+// article.route.js
+
+router.route('/')
+  .get(articleCtrl.articleGet) /** 取得 Article 所有值組 */
+  .post(articleCtrl.articlePost); /** 新增 Article 值組 */
+```
+
+### **GET 測試**
+
+```bash
+yarn build
+yarn start
+```
+
+使用 Postman 進行 GET 請求測試
+
+<img src="https://ithelp.ithome.com.tw/upload/images/20180103/20107247kKXZwQBdk2.png">
+
+## **【實作】Article文章 (PUT與DELETE)**
+
+> 本章節參考 [IT鐵人賽 - \[Day-25\](實作)Article文章(PUT與DELETE)](https://ithelp.ithome.com.tw/articles/10195846)
+
+### **PUT 修改**
+
+編輯 _src/server/modules/**article.module.js**_
+```javascript
+// article.module.js
+
+/* Article PUT 修改 */
+const modifyArticle = (insertValues, userId) => {
+  return new Promise((resolve, reject) => {
+    connectionPool.getConnection((connectionError, connection) => { // 資料庫連線
+      if (connectionError) {
+        reject(connectionError); // 若連線有問題回傳錯誤
+      } else { // Article資料表修改指定id一筆資料
+        connection.query('UPDATE Article SET ? WHERE article_id = ?', [insertValues, userId], (error, result) => {
+          if (error) {
+            console.error('SQL error: ', error);// 寫入資料庫有問題時回傳錯誤
+            reject(error);
+          } else if (result.affectedRows === 0) { // 寫入時發現無該筆資料
+            resolve('請確認修改Id！');
+          } else if (result.message.match('Changed: 1')) { // 寫入成功
+            resolve('資料修改成功');
+          } else {
+            resolve('資料無異動');
+          }
+          connection.release();
+        });
+      }
+    });
+  });
+};
+
+export default {
+  modifyArticle
+}
+```
+
+編輯 _src/server/controllers/**article.controller.js**_
+```javascript
+// article.controller.js
+
+/* Article PUT 修改 */
+const articlePut = (req, res) => {
+  // 取得修改id
+  const userId = req.params.article_id;
+  // 取得修改參數
+  const insertValues = req.body;
+  articleModule.modifyArticle(insertValues, userId).then((result) => {
+    res.send(result); // 回傳修改成功訊息
+  }).catch((err) => { return res.send(err); }); // 失敗回傳錯誤訊息
+};
+
+export default {
+  articlePut
+}
+```
+
+編輯 _src/server/routes/**article.route.js**_
+```javascript
+router.route('/:article_id').put(articleCtrl.articlePut); /** 修改 Article 值組 */
+```
+
+### **PUT 測試**
+
+打包並啟動伺服器
+```bash
+yarn build
+yarn start
+```
+
+準備進行測試的 json body
+```json
+{
+    "user_id": 1,
+    "article_title": "Node.js教學",
+    "article_tag": "API",
+    "article_content": "修改了內容"
+}
+```
+
+使用 Postman 發送請求
+
+<img src="https://ithelp.ithome.com.tw/upload/images/20180104/20107247nK802XO5e2.png">
+
+### **DELETE 刪除**
+
+編輯 _src/server/modules/**article.module.js**_
+```javascript
+/* Article  DELETE 刪除 */
+const deleteArticle = (userId) => {
+  return new Promise((resolve, reject) => {
+    connectionPool.getConnection((connectionError, connection) => { // 資料庫連線
+      if (connectionError) {
+        reject(connectionError); // 若連線有問題回傳錯誤
+      } else { // Article資料表刪除指定id一筆資料
+        connection.query('DELETE FROM Article WHERE article_id = ?', userId, (error, result) => {
+          if (error) {
+            console.error('SQL error: ', error);// 資料庫存取有問題時回傳錯誤
+            reject(error);
+          } else if (result.affectedRows === 1) {
+            resolve('刪除成功！');
+          } else {
+            resolve('刪除失敗！');
+          }
+          connection.release();
+        });
+      }
+    });
+  });
+};
+
+export default {
+  deleteArticle
+}
+```
+
+編輯 _src/server/controllers/**article.controller.js**_
+```javascript
+// article.module.js
+
+/* Article  DELETE 刪除 */
+const articleDelete = (req, res) => {
+  // 取得刪除id
+  const userId = req.params.article_id;
+  articleModule.deleteArticle(userId).then((result) => {
+    res.send(result); // 回傳刪除成功訊息
+  }).catch((err) => { return res.send(err); }); // 失敗回傳錯誤訊息
+};
+
+export default {
+  articleDelete
+}
+```
+
+編輯 _src/server/routes/**article.route.js**_
+```javascript
+router.route('/:article_id')
+  .put(articleCtrl.articlePut) /** 修改 Article 值組 */
+  .delete(articleCtrl.articleDelete); /** 刪除 Article 值組 */
+```
+
+### **DELETE 測試**
+
+打包並啟動伺服器
+```bash
+yarn build
+yarn start
+```
+
+使用 Postman 發送請求
+
+<img src="https://ithelp.ithome.com.tw/upload/images/20180104/20107247JXPQO1GWLt.png">
+
+## **【實作】User用戶 (GET與POST)**
+
+### **新增 User**
+
+編輯 _src/server/modules/**index.route.js**_
+```javascript
+/** User Router */
+router.use('/user', user);
+```
+
+新增並編輯 _src/server/modules/**user.module.js**_
+```javascript
+傳過來的。
+
+// user.module.js
+import mysql from 'mysql';
+import config from '../../config/config';
+
+const connectionPool = mysql.createPool({
+  connectionLimit: 10,
+  host: config.mysqlHost,
+  user: config.mysqlUserName,
+  password: config.mysqlPass,
+  database: config.mysqlDatabase
+});
+/* User  POST 新增 */
+const createUser = (insertValues) => {
+  return new Promise((resolve, reject) => {
+    connectionPool.getConnection((connectionError, connection) => { // 資料庫連線
+      if (connectionError) {
+        reject(connectionError); // 若連線有問題回傳錯誤
+      } else {
+        connection.query('INSERT INTO User SET ?', insertValues, (error, result) => { // User資料表寫入一筆資料
+          if (error) {
+            console.error('SQL error: ', error);
+            reject(error); // 寫入資料庫有問題時回傳錯誤
+          } else if (result.affectedRows === 1) {
+            resolve(`新增成功！ user_id: ${result.insertId}`); // 寫入成功回傳寫入id
+          }
+          connection.release();
+        });
+      }
+    });
+  });
+};
+export default {
+  createUser
+};
+```
+
+新增並編輯 _src/server/controllers/**user.controller.js**_
+```javascript
+// user.controller.js
+import userModule from '../modules/user.module';
+
+/* User  POST 新增 */
+const userPost = (req, res) => {
+  // 取得新增參數
+  const insertValues = req.body;
+  userModule.createUser(insertValues).then((result) => {
+    res.send(result); // 成功回傳result結果
+  }).catch((err) => { return res.send(err); }); // 失敗回傳錯誤訊息
+};
+export default {
+  userPost
+};
+```
+
+新增並編輯 _src/server/routes/**user.route.js**_
+```javascript
+// user.route.js
+import express from 'express';
+import userCtrl from '../controllers/user.controller';
+
+const router = express.Router();
+
+router.route('/').post(userCtrl.userPost); /** 取得 User 所有值組 */
+
+export default router;
+```
+
+## **測試**
+```bash
+yarn build
+yarn start
+```
+
+測試資料
+```json
+{
+	"user_name":"Andy10",
+	"user_mail":"andy@gmail.com",
+	"user_password":"0000"
+}
+```
+
+<img src="https://ithelp.ithome.com.tw/upload/images/20180105/20107247d6psIz3KrE.png">
+
+### **取得 User**
+
+編輯 _src/server/modules/**user.module.js**_
+```javascript
+// user.module.js
+
+/*  User GET 取得  */
+const selectUser = () => {
+  return new Promise((resolve, reject) => {
+    connectionPool.getConnection((connectionError, connection) => { // 資料庫連線
+      if (connectionError) {
+        reject(connectionError); // 若連線有問題回傳錯誤
+      } else {
+        // User撈取所有欄位的值組
+        connection.query('SELECT * FROM User', (error, result) => {
+            if (error) {
+              console.error('SQL error: ', error);
+              reject(error); // 寫入資料庫有問題時回傳錯誤
+            } else {
+              resolve(result); // 撈取成功回傳 JSON 資料
+            }
+            connection.release();
+          }
+        );
+      }
+    });
+  });
+};
+
+export default {
+  selectUser
+}
+```
+
+編輯 _src/server/controllers/**user.controller.js**_
+```javascript
+// user.controller.js
+
+/*  User GET 取得  */
+const userGet = (req, res) => {
+  userModule.selectUser().then((result) => {
+    res.send(result); // 成功回傳result結果
+  }).catch((err) => {
+    return res.send(err);
+  }); // 失敗回傳錯誤訊息
+};
+
+export default {
+  userGet
+}
+```
+
+編輯 _src/server/routes/**user.route.js**_
+```javascript
+// user.route.js
+import express from 'express';
+import userCtrl from '../controllers/user.controller';
+
+const router = express.Router();
+
+router.route('/')
+  .get(userCtrl.userGet) /** 取得 User 所有值組 */
+  .post(userCtrl.userPost); /** 新增 User 值組 */
+
+
+export default router;
+```
+
+## **測試**
+```bash
+yarn build
+yarn start
+```
+
+<img src="https://ithelp.ithome.com.tw/upload/images/20180105/20107247nKxSGo0dRA.png">
+
+## **【實作】User用戶 (PUT與DELETE)**
+
+### **User 修改**
+
+編輯 _src/server/modules/**user.module.js**_
+```javascript
+// user.module.js
+
+/* User PUT 修改 */
+const modifyUser = (insertValues, userId) => {
+  return new Promise((resolve, reject) => {
+    connectionPool.getConnection((connectionError, connection) => { // 資料庫連線
+      if (connectionError) {
+        reject(connectionError); // 若連線有問題回傳錯誤
+      } else { // User資料表修改指定id一筆資料
+        connection.query('UPDATE User SET ? WHERE user_id = ?', [insertValues, userId], (error, result) => {
+          if (error) {
+            console.error('SQL error: ', error);// 寫入資料庫有問題時回傳錯誤
+            reject(error);
+          } else if (result.affectedRows === 0) { // 寫入時發現無該筆資料
+            resolve('請確認修改Id！');
+          } else if (result.message.match('Changed: 1')) { // 寫入成功
+            resolve('資料修改成功');
+          } else {
+            resolve('資料無異動');
+          }
+          connection.release();
+        });
+      }
+    });
+  });
+};
+
+export default {
+  modifyUser
+}
+```
+
+編輯 _src/server/controllers/**user.controller.js**_
+```javascript
+// user.controller.js
+
+/* User PUT 修改 */
+const userPut = (req, res) => {
+  // 取得修改id
+  const userId = req.params.user_id;
+  // 取得修改參數
+  const insertValues = req.body;
+  userModule.modifyUser(insertValues, userId).then((result) => {
+    res.send(result); // 回傳修改成功訊息
+  }).catch((err) => {
+    return res.send(err);
+  }); // 失敗回傳錯誤訊息
+};
+
+export default {
+  userPut
+}
+```
+
+編輯 _src/server/routes/**user.route.js**_
+```javascript
+// user.route.js
+
+/** 修改 User 值組 */
+router.route('/:user_id').put(userCtrl.userPut);
+```
+
+## **測試**
+```bash
+yarn build
+yarn start
+```
+
+測試資料
+```json
+{
+	"user_id":1,
+	"user_name":"10程式中",
+	"user_mail":"andy@gmail.com",
+	"user_password":"1010"
+}
+```
+
+<img src="https://ithelp.ithome.com.tw/upload/images/20180106/201072472YR3r6mrpv.png">
+
+### **User 刪除**
+
+編輯 _src/server/modules/**user.module.js**_
+```javascript
+// user.module.js
+
+/* User  DELETE 刪除 */
+const deleteUser = (userId) => {
+  return new Promise((resolve, reject) => {
+    connectionPool.getConnection((connectionError, connection) => { // 資料庫連線
+      if (connectionError) {
+        reject(connectionError); // 若連線有問題回傳錯誤
+      } else { // User資料表刪除指定id一筆資料
+        connection.query('DELETE FROM User WHERE user_id = ?', userId, (error, result) => {
+          if (error) {
+            console.error('SQL error: ', error);// 資料庫存取有問題時回傳錯誤
+            reject(error);
+          } else if (result.affectedRows === 1) {
+            resolve('刪除成功！');
+          } else {
+            resolve('刪除失敗！');
+          }
+          connection.release();
+        });
+      }
+    });
+  });
+};
+
+export default {
+  deleteUser
+}
+```
+
+編輯 _src/server/controllers/**user.controller.js**_
+```javascript
+// user.controller.js
+
+/* User  DELETE 刪除 */
+const userDelete = (req, res) => {
+  // 取得刪除id
+  const userId = req.params.user_id;
+  userModule.deleteUser(userId).then((result) => {
+    res.send(result); // 回傳刪除成功訊息
+  }).catch((err) => {
+    return res.send(err);
+  }); // 失敗回傳錯誤訊息
+};
+
+export default {
+  userDelete
+}
+```
+
+編輯 _src/server/routes/**user.route.js**_
+```javascript
+router.route('/:user_id')
+  .put(userCtrl.userPut) /** 修改 User 值組 */
+  .delete(userCtrl.userDelete); /** 刪除 User 值組 */
+```
+
+## **測試**
+```bash
+yarn build
+yarn start
+```
+
+<img src="https://ithelp.ithome.com.tw/upload/images/20180106/20107247vzX272W3BG.png">
+
+## **使用 joi 來驗證 POST 資料**
