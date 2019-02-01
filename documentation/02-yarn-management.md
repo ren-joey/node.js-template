@@ -14,3 +14,5 @@ sudo npm i -g yarn
 ```
 
 終端機接下來會詢問您電腦的密碼，直接輸入後點 enter 即可
+
+[上一章](./01-eslint-install.md) - [返回目錄](../readme.md) - [下一章](./03-webpack-install.md)
